@@ -8,7 +8,7 @@ import matplotlib.image as mpimg
 from random import randint
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Cropping2D
+from keras.layers import Flatten, Dense, Dropout, Lambda, Cropping2D
 from keras.layers.convolutional import Convolution2D
 
 samples = []
@@ -16,6 +16,8 @@ with open('./data/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         samples.append(line)
+
+samples.pop(0)
 
 train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
@@ -61,9 +63,11 @@ model.add(Convolution2D(48, 5, 5, subsample=(2, 2), activation = 'relu'))
 model.add(Convolution2D(64, 3, 3, activation = 'relu'))
 model.add(Convolution2D(64, 3, 3, activation = 'relu'))
 model.add(Flatten())
-model.add(Dense(100))
-model.add(Dense(50))
-model.add(Dense(10))
+model.add(Dense(100, activation = 'relu'))
+model.add(Dropout(0.3))
+model.add(Dense(50, activation = 'relu'))
+model.add(Dropout(0.3))
+model.add(Dense(10, activation = 'relu'))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
